@@ -79,7 +79,7 @@ sInput.onkeyup = function (e) {
     if (fuse) {
         let results;
         if (params.fuseOpts) {
-            results = fuse.search(this.value.trim(), {limit: params.fuseOpts.limit}); // the actual query being run using fuse.js along with options
+            results = fuse.search(this.value.trim(), { limit: params.fuseOpts.limit }); // the actual query being run using fuse.js along with options
         } else {
             results = fuse.search(this.value.trim()); // the actual query being run using fuse.js
         }
@@ -87,8 +87,27 @@ sInput.onkeyup = function (e) {
             // build our html if result exists
             let resultSet = ''; // our results bucket
 
+            // slugify helper
+            function slugify(text) {
+                return text.toString().toLowerCase()
+                    .replace(/\s+/g, '-')           // Replace spaces with -
+                    .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+                    .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+                    .replace(/^-+/, '')             // Trim - from start of text
+                    .replace(/-+$/, '');            // Trim - from end of text
+            }
+
             for (let item in results) {
-                resultSet += `<li class="post-entry"><header class="entry-header">${results[item].item.title}&nbsp;»</header>` +
+                let domainsHtml = '';
+                if (results[item].item.domains) {
+                    // Ensure domains is an array
+                    let domains = Array.isArray(results[item].item.domains) ? results[item].item.domains : [results[item].item.domains];
+                    domains.forEach(domain => {
+                        domainsHtml += `<span class="domain-pill domain-${slugify(domain)}" style="font-size: 0.7em; padding: 1px 6px; margin-left: 8px;">${domain}</span>`;
+                    });
+                }
+
+                resultSet += `<li class="post-entry"><header class="entry-header">${results[item].item.title}${domainsHtml}&nbsp;»</header>` +
                     `<a href="${results[item].item.permalink}" aria-label="${results[item].item.title}"></a></li>`
             }
 
