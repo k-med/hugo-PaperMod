@@ -107,7 +107,11 @@ sInput.onkeyup = function (e) {
                     });
                 }
 
-                resultSet += `<li class="post-entry"><header class="entry-header">${results[item].item.title}${domainsHtml}&nbsp;»</header>` +
+                resultSet += `<li class="post-entry">` +
+                    `<header class="entry-header" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">` +
+                    `<span>${results[item].item.title}&nbsp;»</span>` +
+                    `<span style="margin-left: auto; display: flex; gap: 4px;">${domainsHtml}</span>` +
+                    `</header>` +
                     `<a href="${results[item].item.permalink}" aria-label="${results[item].item.title}"></a></li>`
             }
 
